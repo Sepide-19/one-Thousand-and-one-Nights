@@ -11,11 +11,9 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 app = Flask(__name__)
 
-
 @app.route('/')
 def home():
     return "Welcome to the One Thousand and One Nights Web App!"
-
 
 @app.route('/generate', methods=['POST'])
 def generate():
@@ -43,12 +41,5 @@ def generate():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
-
 if __name__ == '__main__':
     app.run(debug=True)
-
-# Load environment variables from .env file
-load_dotenv()
-
-# Get OpenAI API key from environment variable
-openai.api_key = os.getenv("OPENAI_API_KEY")
