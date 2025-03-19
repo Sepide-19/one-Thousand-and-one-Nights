@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One Thousand and One Nights</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <h1>One Thousand and One Nights</h1>
+    <form action="/generate" method="POST">
+        <label for="emojis">Enter 3-5 Emojis:</label><br>
+        <input type="text" id="emojis" name="emojis" required><br><br>
+
+        <label for="theme">Enter Theme:</label><br>
+        <input type="text" id="theme" name="theme" required><br><br>
+
+        <input type="submit" value="Generate Story">
+    </form>
+
+    {% if story %}
+    <h2>Your Story:</h2>
+    <p>{{ story }}</p>
+    {% endif %}
+</body>
+
+</html>
