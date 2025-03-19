@@ -1,31 +1,54 @@
+from flask import Flask, request, jsonify
 import openai
-from flask import Flask, render_template, request
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Set OpenAI API key
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 app = Flask(__name__)
-
-# OpenAI API Key
-openai.api_key = 'your-openai-api-key-here'
 
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return "Welcome to the One Thousand and One Nights Web App!"
 
 
 @app.route('/generate', methods=['POST'])
 def generate():
-    emojis = request.form.get('emojis')
-    theme = request.form.get('theme')
+    # Get emojis and theme from the POST request
+    data = request.get_json()
+    emojis = data.get('emojis')
+    theme = data.get('theme')
 
-    # Estefadeh az OpenAI baray generate kardan story
-    response = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=f"Create a story based on these emojis: {emojis} and the theme: {theme}.",
-        max_tokens=150
-    )
-    story = response.choices[0].text.strip()
-    return render_template('index.html', story=story)
+    # Prepare prompt
+    prompt = f"Create a story with these emojis: {emojis} and the theme: {theme}"
+
+    try:
+        # Use OpenAI's ChatCompletion API to generate a response
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",  # Or another GPT-3.5 version model
+            messages=[{"role": "user", "content": prompt}]
+        )
+
+        # Get the story from the response
+        story = response['choices'][0]['message']['content']
+
+        # Return the story as JSON response
+        return jsonify({'story': story})
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Get OpenAI API key from environment variable
+openai.api_key = os.getenv("OPENAI_API_KEY")
